@@ -14,6 +14,12 @@ use WWW::Selenium::Selenese::TestCase;
 
 # conversion table for Selenese commands and Perl methods
 my %command_map = (
+    # a comment
+    comment => {  # Selenese command name
+        func => '#',  # method name in Test::WWW::Selenium
+        args => 1,    # number of arguments to pass
+    },
+
     # opens a page using a URL.
     open => {  # Selenese command name
         func => 'open_ok',  # method name in Test::WWW::Selenium
@@ -186,7 +192,9 @@ sub turn_func_into_perl {
             $line .= turn_func_into_perl($subcode, @args);
         }
     } else { # 単一のPerl文で構成される場合
-        if ( $code->{test} ) { # testパラメータがある場合はそれを関数として呼ぶ
+        if ( $code->{func} eq '#' ) {    # Comment
+            $line = $code->{func} . make_args( $code, @args );
+        } elsif ( $code->{test} ) { # testパラメータがある場合はそれを関数として呼ぶ
             $line = $code->{test}.'($sel->'.$code->{func}.', '.make_args($code, @args).');';
         } elsif ( $code->{store} ) { # 変数に代入する場合
             my $varname = pop @args;
@@ -232,7 +240,12 @@ sub make_args {
         # 値の先頭の exact: を削除
         map { s/^exact:// } @args;
         # 引数をカンマで結合する
-        $str .= join(', ', map { quote($_) } @args);
+
+        if ( $code->{func} eq '#' ? 0 : 1 ) {
+            $str .= join(', ', map { quote($_) } @args);
+        } else {
+            $str .= join(', ', @args);
+        }
     }
 
     return $str;

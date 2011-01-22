@@ -7,9 +7,9 @@ requires 'HTML::TreeBuilder';
 requires 'Text::MicroTemplate';
 
 tests 't/*.t';
-author_tests 'xt';
+#author_tests 'xt';
 
 build_requires 'Test::More';
-use_test_base;
+#use_test_base;
 auto_include;
 WriteAll;

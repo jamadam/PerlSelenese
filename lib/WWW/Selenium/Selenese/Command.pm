@@ -194,8 +194,8 @@ sub turn_func_into_perl {
     } else { # 単一のPerl文で構成される場合
         if ( $code->{func} eq '#' ) {    # Comment
             $line = $code->{func} . make_args( $code, @args );
-        } elsif ( $code->{test} ) { # testパラメータがある場合はそれを関数として呼ぶ
-            $line = $code->{test}.'($sel->'.$code->{func}.', '.make_args($code, @args).');';
+#        } elsif ( $code->{test} ) { # testパラメータがある場合はそれを関数として呼ぶ
+#            $line = $code->{test}.'($sel->'.$code->{func}.', '.make_args($code, @args).');';
         } elsif ( $code->{store} ) { # 変数に代入する場合
             my $varname = pop @args;
             $line = "my \$$varname = \$sel->".$code->{func}.'('

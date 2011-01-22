@@ -41,6 +41,7 @@ sub parse {
     return if $self->{commands};
 
     my $tree = HTML::TreeBuilder->new;
+    $tree->store_comments(1);
     $tree->parse_file($filename);
 
     # base_urlを<link>から見つける
@@ -53,21 +54,30 @@ sub parse {
     # <tbody>以下からコマンドを抽出
     my $tbody = $tree->find('tbody');
     my @commands;
-    foreach my $tr ( $tbody->find('tr') ) {
-        # 各<td>についてその下のHTMLを抽出する
-        my @values = map {
-            my $value = '';
-            foreach my $child ( $_->content_list ) {
-                # <br />が含まれる場合はタグごと抽出
-                if ( ref($child) && eval{ $child->isa('HTML::Element') } ) {
-                    $value .= $child->as_HTML('<>&');
-                } else {
-                    $value .= $child;
+    foreach my $trs_comments( $tbody->find(('tr', '~comment')) ) {
+        my @values;
+        if ( $trs_comments->tag() eq '~comment' ) {
+            push @values, "comment";
+            push @values, $trs_comments->attr('text');
+            push @values, "comment";
+        } elsif ( $trs_comments->tag() eq 'tr' ) {
+            # 各<td>についてその下のHTMLを抽出する
+            @values = map {
+                my $value = '';
+                foreach my $child ( $_->content_list ) {
+                    # <br />が含まれる場合はタグごと抽出
+                    if ( ref($child) && eval{ $child->isa('HTML::Element') } ) {
+                        $value .= $child->as_HTML('<>&');
+                    } elsif ( eval { $child->can('attr') } && $child->attr('_tag') == '~comment' ){
+                        warn "FISH";
+                        $value .= $child->attr('text');
+                    } else {
+                        $value .= $child;
+                    }
                 }
-            }
-            $value;
-        } $tr->find('td');
-
+                $value;
+            } $trs_comments->find('td');
+        }
         # Perlスクリプトに変換
         my $command = WWW::Selenium::Selenese::Command->new(\@values);
         push(@commands, $command);

@@ -242,10 +242,12 @@ sub make_args {
 sub quote {
     my $str = shift;
 
-    $str =~ s,<br />,\\n,g;
-    $str =~ s/\Q$_\E/\\$_/g for qw(" % @ $);
-    $str = '"'.$str.'"';
-    return $str;
+    $str =~ s{<br />}{\\n}g;
+    return "'". $str. "'" if ($str !~ qr{'});
+    return "q{". $str. "}" if ($str !~ qr([\{\}]));
+    return "q(". $str. ")" if ($str !~ qr{[\(\)]});
+    $str =~ s{'}{\\'}g;
+    return "'". $str. "'";
 }
 
 1;

@@ -12,6 +12,6 @@ my $sel = Test::WWW::Selenium->new( host => "localhost",
                                     browser => "*firefox",
                                     browser_url => "http://www.kernel.org/" );
 
-$sel->open_ok("/");
-$sel->title_is("The Linux Kernel Archives");
-$sel->text_is("//h1", "The Linux Kernel Archives");
+$sel->open_ok('/');
+$sel->title_is('The Linux Kernel Archives');
+$sel->text_is('//h1', 'The Linux Kernel Archives');

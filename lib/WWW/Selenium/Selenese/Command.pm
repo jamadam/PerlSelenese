@@ -143,6 +143,32 @@ my %command_map = (
         func => 'select_ok',
         args => 2,
     },
+    
+    # run script
+    runScript => {
+        func => 'run_script_ok',
+        args => 1,
+    },
+    
+    # run script
+    runScriptAndWait => {
+        func => [  # combination of methods
+            {
+                func => 'run_script_ok',
+                args => 1,
+            },
+            {
+                func => 'wait_for_page_to_load_ok',
+                force_args => [ 30000 ],  # force arguments to pass
+            },
+        ],
+    },
+    
+    # css count is
+    assertCssCount => {
+        func => 'css_count_is',
+        args => 2,
+    },
 );
 
 # translate values to Perl code

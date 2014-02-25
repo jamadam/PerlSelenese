@@ -36,3 +36,7 @@ $sel->click_ok(q{//body[@id='cpansearch']/h2[1]/a/b});
 $sel->wait_for_page_to_load_ok('30000');
 $sel->title_is('Test::More - search.cpan.org');
 $sel->is_text_present_ok('Test::More');
+$sel->css_count_is('css=#cpansearch h2:nth-of-type(1) a b', '1');
+$sel->run_script_ok('alert(1)');
+$sel->run_script_ok('alert(1)');
+$sel->wait_for_page_to_load_ok('30000');

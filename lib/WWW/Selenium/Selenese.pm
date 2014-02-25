@@ -1,3 +1,4 @@
+# ABSTRACT: turns baubles into trinkets
 package WWW::Selenium::Selenese;
 
 use strict;
